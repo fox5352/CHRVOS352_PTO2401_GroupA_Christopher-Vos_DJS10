@@ -9,47 +9,32 @@ type Post = {
 };
 
 function App() {
-  const [isLoading, setIsLoading] = useState(false);
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // fetch the posts
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true); // set is loading
+    fetch("https://jsonplaceholder.typicode.com/posts")
+      .then((res) => {
         setError(null); // reset error
-
-        // Fetching data from API
-        const res = await fetch("https://jsonplaceholder.typicode.com/posts");
 
         // validate's request status
         if (!res.ok) throw new Error("Http error: " + res.status);
-
-        // Parsing JSON data from response
-        const data = await res.json();
-
+        return res.json();
+      })
+      .then((data) => {
         // Check if data is not empty and set posts state
         if (data.length > 0) {
           setPosts(data);
         }
-      } catch (error) {
+      })
+      .catch((error) => {
         // Log error and set error state
         console.log(error);
         setError("Failed to fetch data");
         setPosts(null);
-      } finally {
-        // After attempting fetching, set loading to false
-        setIsLoading(false);
-      }
-    };
-
-    // call the fetch function
-    fetchData();
+      });
   }, []);
-
-  if (isLoading) {
-    return <h1>Loading ...</h1>;
-  }
 
   if (error) {
     return <h1>{error}</h1>;
@@ -63,6 +48,7 @@ function App() {
   );
 }
 
+// basic card component
 function Card({
   id,
   title,
