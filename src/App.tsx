@@ -23,7 +23,7 @@ function App() {
         return res.json();
       })
       .then((data) => {
-        // Check if data is not empty and set posts state
+        // Check if data is not empty after parsing the json and set posts state
         if (data.length > 0) {
           setPosts(data);
         }
